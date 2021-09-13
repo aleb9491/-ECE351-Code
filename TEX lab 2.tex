@@ -1,0 +1,291 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Mohammad Al Ebedan                                           %
+% ECE 351-52                                                   %
+% Lab 2                                                        %
+% Sep 13/2021                                                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\documentclass[11pt,a4]{Lab2 Report}
+\usepackage[utf8]{inputenc}
+\usepackage{fullpage}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codeblue}{rgb}{0,0,0.95}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{codeblue},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codegreen},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=b,
+	keepspaces=true,
+	numbers=left,
+	numbersep=5pt,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	tabsize=2
+}
+\lstset{style=mystyle}
+
+\title{Lab2: User-Defined Functions}								
+
+\author{Mohammad Al Ebedan}						
+
+\date{13/9/2021}
+
+
+
+
+\begin{document}
+	
+%%%%%%%%%%%%%%%%%%%%%%%% Introduction %%%%%%%%%%%%%%%%
+	\section{Introduction}
+	
+	
+	Introduced user-defined functions in Python and utilize this feature to demonstrate various signal operations including time shifting, time scaling, time reversal, signal addition, and discrete differentiation.
+	
+%%%%%%%%%%%%%%%%%%%%%%%% Equations %%%%%%%%%%%%%%%%%%%
+	\section{Equations}
+	
+	For this lab, the function func3(t) was used in most of the parts and it is defined as:
+	\begin{equation}
+		func3(t) = r(t) - r(t-3) + 5u(t-3) - 2u(t-6) - 2r(t-6)
+	\end{equation}
+	
+%%%%%%%%%%%%%%%%%%%%%%%% Methodology %%%%%%%%%%%%%%%%%
+	\section{Methodology & Results}
+	
+	This lab consists three parts:
+	\begin{itemize}
+		\item
+		
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	Part 1:
+		
+		In this part, we created a simple cosine function and plotted it.
+		\begin{lstlisting}[language=Python]
+			#%% User-defining the cosine function
+			steps = 1e-4
+			
+			t = np.arange (0 , 10 + steps , steps )
+			
+			def function1(t): 
+			y = np.cos(t) 
+			return y 
+			
+			y = function1(t)  
+			
+			plt.figure(figsize=(10,7))
+			plt.subplot(1,1,1)
+			plt.plot(t,y)
+			plt.grid()
+			plt.ylabel ('y(t)')
+			plt.title ('cosine function')
+		\end{lstlisting}
+		
+		The output of this is the cosine plot:\\
+		\includegraphics{cosine}
+		\item
+		
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Part 2:\\
+
+		We created step and ramp user-defined functions and plot them using the following code:\\
+		\begin{lstlisting}[language=Python]
+			def u(t): 
+			y = np.zeros((t.shape))
+			for i in range(len(t)):
+			if t[i] >= 0:
+			y[i] = 1
+			else:
+			y[i]= 0
+			return y        
+			
+			steps = 1e-4
+			t = np.arange(-1, 1 + steps, steps)
+			y = u(t)
+			
+			plt.figure(figsize=(10,7))
+			plt.subplot(2,1,1)
+			plt.plot(t,y)
+			plt.grid(True)
+			plt.ylabel ('y(t)')
+			plt.title ('step')
+			
+			def r(t): 
+			y = np.zeros(t.shape)
+			for i in range(len(t)):
+			if t[i]>=0:
+			y[i] = t[i]
+			else:
+			y[i] = 0
+			return y       
+			
+			y = r(t)
+			
+			plt.subplot(2,1,2)
+			plt.plot(t,y)
+			plt.grid(True)
+			plt.ylabel ('y(t)')
+			plt.title ('Ramp')
+			plt.show()
+		\end{lstlisting}
+		
+		Which results for the output:\\
+		\includegraphics{P2T2}\\
+
+		Then we derived an equation, which is included in the "Equation" section, for a given graph using step and ramp functions and plot the function using the following code:\\
+		\begin{lstlisting}[language=Python]
+			t = np.arange(-5, 10 + steps, steps)
+			
+			def funct3(t):
+			y = r(t)-r(t-3)+5*u(t-3)-2*u(t-6)-2*r(t-6)
+			return y  
+			
+			y = funct3(t)
+			
+			plt.figure(figsize=(10,7))
+			plt.subplot(1,1,1)
+			plt.plot(t,y)
+			plt.grid()
+			plt.ylabel ('y(t)')
+			plt.title ('Ramp')
+			plt.show()
+		\end{lstlisting}
+		
+		\includegraphics{P2T3}
+		\item
+		
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	Part 3:
+		
+		In this part, we used time-shifting and scaling operations on the function we derived in part2. This was implemented by the following code:\\
+		\begin{lstlisting}[language=Python]
+			t = np.arange(-10, 5 + steps, steps)
+			
+			y = funct3(-t)
+			
+			plt.figure(figsize=(10,7))
+			plt.subplot(1,1,1)
+			plt.plot(t,y)
+			plt.grid(True)
+			plt.ylabel ('y(t)')
+			plt.title ('time reversed function')
+			plt.show()
+			
+			
+			t = np.arange(-1, 14 + steps, steps)
+			
+			y = funct3(t-4)
+			
+			plt.figure(figsize=(10,7))
+			plt.subplot(2,1,1)
+			plt.plot(t,y)
+			plt.grid(True)
+			plt.ylabel ('y(t)')
+			plt.title ('time shifted function')
+			
+			t = np.arange(-14, 1 + steps, steps)
+			
+			y = funct3(-t-4)
+			
+			plt.subplot(2,1,2)
+			plt.plot(t,y)
+			plt.grid(True)
+			plt.ylabel ('y(t)')
+			plt.title ('time shifted reversed function')
+			plt.show()
+			
+			t = np.arange(-5, 20 + steps, steps)
+			
+			y = funct3(t/2)
+			
+			plt.figure(figsize=(10,7))
+			plt.subplot(2,1,1)
+			plt.plot(t,y)
+			plt.grid()
+			plt.ylabel ('y(t)')
+			plt.title ('time scaled function')
+			
+			t = np.arange(-2, 5 + steps, steps)
+			
+			y = funct3(2*t)
+			
+			plt.subplot(2,1,2)
+			plt.plot(t,y)
+			plt.grid()
+			plt.ylabel ('y(t)')
+			plt.title ('time scaled function')
+			plt.show()
+		\end{lstlisting}
+		
+		And the corresponding graphs for the different operations are outputted as following:\\
+		\includegraphics{P3T1}\\
+		\includegraphics{P3T2}\\
+		\includegraphics{P3T3}\\
+		Then we plot the derivative of the function we derived in part 2, once by hand using drow.io and another using Python.
+		\begin{enumerate}
+			\item 
+			Hand Drown:\\
+			\includegraphics{P3T4}
+			\item
+			Python:\\
+			\begin{lstlisting}[language=Python]
+				steps = 1e-3
+				t = np.arange(-5, 10+steps, steps)
+				y = funct3(t)
+				dt = np.diff(t)
+				dy = np.diff(y, axis = 0)/dt
+				
+				
+				
+				plt.figure(figsize=(10,7))
+				plt.plot(t,y,'--', label = 'y(t)')
+				plt.plot(t[range(len(dy))], dy, label = 'dy(t)/dt')
+				plt.title ('Derivative WRT time')
+				plt.grid(True)
+				plt.ylim([-5,10])
+				plt.show()
+			\end{lstlisting}
+			\includegraphics{P3T5}
+		\end{enumerate}
+		
+	\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%% Error Analysis %%%%%%%%%%%%%%%
+	\section{Error Analysis}
+	
+	Although user-defining functions is not that difficult, it could get so complicated with more complex functions, or simply when it comes to taking derivatives as seen in this lab.
+	
+%%%%%%%%%%%%%%%%%%%%%%%% Questions %%%%%%%%%%%%%%%%%%%%
+	\section{Questions}
+	
+	\begin{enumerate}
+		\item 
+		Are the plots from Part 3 Task 4 and Part 3 Task 5 identical? Is it possible for them to match? Explain why or why not.\\
+		\\No, they'er not identical because when spyder diffrentiates the step funtion f(t) as impulse function and draws the derivative according to that.\\
+		
+		\item
+		How does the correlation between the two plots (from Part 3 Task 4 and Part 3 Task 5) change if you were to change the step size within the time variable in Task 5? Explain why this happens.\\
+		\\If we use a larger step size the plot will change because larger step size causes less accuracy. The step will have large slope and the impulse will be delta impulse.\\
+		
+		\item
+		Leave any feedback on the clarity of lab tasks, expectations, and deliverables.\\
+		\\Personally, I get overwhelmed because of how much we are expected to know about using Python and LATEX. However, here I am, after putting so much time and effort in learning how to use them, feeling more comfortable with this lab.
+	\end{enumerate}
+	
+%%%%%%%%%%%%%%%%%%%%%%%% Conclusion %%%%%%%%%%%%%%%%%%%%
+	\section{Conclusion}
+	
+	Throughout this lab, we learned how to use  user-defined functions and how to properly apply time reverse, time shift, and time scale operations and how to adjust the graph domain so it fits the changes due to the corresponding operation. In addition to that, we went over the differentiation of the ramp and step functions.
+	
+\end{document}
